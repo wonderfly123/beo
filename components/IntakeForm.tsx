@@ -317,17 +317,6 @@ function FormField({ field, error, onBlur, onPlaceSelect, labelOverride, helpOve
       {(helpOverride || field.helpText) && (
         <p className="text-[13px] text-[#9a9890] font-[family-name:var(--font-jost)] mb-1.5">{helpOverride || field.helpText}</p>
       )}
-      {field.helpLink && (
-        <a
-          href={field.helpLink.href}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-block mb-1.5 text-[13px] text-[#c44b2b] font-[family-name:var(--font-jost)] underline underline-offset-2 hover:text-[#a53d22] transition-colors"
-        >
-          {field.helpLink.text}
-        </a>
-      )}
-
       {field.type === 'select' ? (
         <CustomSelect
           name={field.name}

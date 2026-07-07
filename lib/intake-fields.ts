@@ -15,7 +15,6 @@ export interface IntakeFieldDef {
   helpByPackage?: Record<string, string> // override helpText when package matches
   showWhen?: { field: string; op: '>' | '>=' | '=='; value: number | string } // show only when another field's value satisfies the predicate
   helpImages?: Array<{ src: string; label: string }> // reference photos displayed via an info popup next to the field label
-  helpLink?: { text: string; href: string } // hyperlink rendered beneath the field
 }
 
 // Matches the ClickUp Events list custom fields exactly
@@ -29,7 +28,7 @@ export const INTAKE_FIELDS: IntakeFieldDef[] = [
   { name: 'company', label: 'Company', type: 'text', required: false, clickupFieldId: '75e86982-b682-4c56-86c4-2007b87d89df', clickupFieldType: 'short_text', placeholder: 'If applicable', section: 'client', half: true },
 
   // === Event Package Details ===
-  { name: 'package', label: 'Package', type: 'select', required: true, clickupFieldId: '72edb0f2-022a-4db4-8ec4-88d694cd54b0', clickupFieldType: 'drop_down', options: ['Sandcastle', 'Cabana', 'Villa'], section: 'package', helpLink: { text: 'Package Details', href: 'https://windanseacoconuts.com/pricing' } },
+  { name: 'package', label: 'Package', type: 'select', required: true, clickupFieldId: '72edb0f2-022a-4db4-8ec4-88d694cd54b0', clickupFieldType: 'drop_down', options: ['Sandcastle', 'Cabana', 'Villa'], section: 'package', helpByPackage: { Sandcastle: 'The essentials done right — custom branded coconuts, expertly prepped and hand delivered to your event for a fresh, photo ready moment your guests won\'t forget.', Cabana: 'Elevate the experience with a styled service cart and a dedicated coconut specialist serving your guests live, perfect for events that want a hands on, interactive touch.', Villa: 'The full showcase — premium brand activation, refined presentation, and tailored service that turns your coconut bar into the centerpiece of the entire event.' } },
   { name: 'eventType', label: 'Event Type', type: 'select', required: true, clickupFieldId: 'afb623cf-472e-4d03-b220-bf3b3ce11bc6', clickupFieldType: 'drop_down', options: ['Conference', 'Birthday Party', 'Corporate Event', 'Shower', 'Wedding', 'Special Event', 'Brand Activation', 'Other'], section: 'package', half: true },
   { name: 'headcount', label: 'Headcount', type: 'number', required: true, clickupFieldId: '019ed06a-6a3a-4782-877f-ec4e94b0ac30', clickupFieldType: 'number', section: 'package', half: true },
   { name: 'garnish', label: 'Garnish', type: 'select', required: true, clickupFieldId: 'b9341990-5265-41a1-ba1e-4cbd3c767084', clickupFieldType: 'drop_down', options: ['N/A', 'Orchids', 'Umbrellas', 'Pineapple Leaves', 'Other'], section: 'package', half: true },
