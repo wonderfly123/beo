@@ -2,6 +2,18 @@
 
 Next.js application powering event operations for Windansea Coconuts. Hosted on Vercel at `windansea.vercel.app`.
 
+## Tech Stack
+
+| Layer | Technology |
+|-------|------------|
+| Framework | Next.js 14.2 (App Router) |
+| Language | TypeScript 5 (strict mode) |
+| UI | React 18, Tailwind CSS 3.4 |
+| Testing | Vitest, React Testing Library, jsdom |
+| Linting | ESLint 8, eslint-config-next |
+| Email | Nodemailer (Gmail SMTP) |
+| Hosting | Vercel (serverless) |
+
 ## Applications
 
 ### 1. Banquet Event Order (BEO)
@@ -31,6 +43,33 @@ End-to-end intake flow triggered when a Pipedrive deal hits "Closed Won."
 - Additional Information (insurance, certifications, delivery instructions, notes)
 - File Uploads (stamp logo, delivery map)
 
+## Project Structure
+
+```
+app/
+  layout.tsx                    # Root layout
+  page.tsx                      # Home page
+  beo/
+    page.tsx                    # BEO list/landing
+    [taskId]/page.tsx           # BEO document view
+  intake/
+    page.tsx                    # Intake landing
+    [taskId]/page.tsx           # Client intake form
+  api/
+    webhooks/pipedrive/route.ts # Pipedrive webhook handler
+    intake/[taskId]/route.ts    # Intake form submission API
+lib/
+  clickup.ts                   # ClickUp API client
+  email.ts                     # Email sending utilities
+  intake-fields.ts             # Intake form field definitions
+  types.ts                     # Shared TypeScript types
+  google-maps.d.ts             # Google Maps type declarations
+__tests__/
+  lib/types.test.ts
+  lib/clickup.test.ts
+  components/BEODocument.test.tsx
+```
+
 ## Environment Variables
 
 | Variable | Description |
@@ -38,14 +77,17 @@ End-to-end intake flow triggered when a Pipedrive deal hits "Closed Won."
 | `CLICKUP_API_KEY` | ClickUp API key |
 | `CLICKUP_LIST_ID` | Target list ID for new intake tasks (`901414665785`) |
 | `SMTP_PASS` | Google Workspace App Password for Gmail SMTP |
+| `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` | Google Maps API key (Places, Geocoding) |
 
 ## Development
 
 ```bash
 npm install
-npm run dev        # http://localhost:3000
-npm run build      # Production build
-npm test           # Run tests
+npm run dev          # http://localhost:3000
+npm run build        # Production build
+npm run lint         # ESLint
+npm test             # Vitest (single run)
+npm run test:watch   # Vitest (watch mode)
 ```
 
 ## External Integrations
@@ -53,4 +95,6 @@ npm test           # Run tests
 - **Pipedrive** — Automation webhook on "Closed Won" deals
 - **ClickUp** — Task creation, custom field updates, file attachments
 - **Gmail SMTP** — Client intake emails and error alerts (from harrison@windanseacoconuts.com)
+- **Google Maps API** — Places autocomplete for venue address, server-side geocoding
+- **Google Docs Viewer** — Inline PDF preview for ClickUp attachments
 - **Vercel** — Hosting and serverless functions
