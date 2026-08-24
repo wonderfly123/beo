@@ -103,10 +103,10 @@ export async function createTask(
   name: string,
   description: string,
   customFields?: Array<{ id: string; value: unknown }>,
-  options?: { startDate?: number; dueDate?: number }
+  options?: { startDate?: number; dueDate?: number; listId?: string }
 ): Promise<{ id: string; name: string }> {
   const apiKey = process.env.CLICKUP_API_KEY
-  const listId = process.env.CLICKUP_LIST_ID
+  const listId = options?.listId || process.env.CLICKUP_LIST_ID
   if (!apiKey) throw new Error('CLICKUP_API_KEY not set')
   if (!listId) throw new Error('CLICKUP_LIST_ID not set')
 
@@ -140,6 +140,24 @@ export async function createTask(
 
   const task = await res.json()
   return { id: task.id, name: task.name }
+}
+
+/**
+ * Check whether a list already has a task whose name contains the given
+ * substring. Used to keep webhook retries idempotent.
+ */
+export async function taskNameExists(listId: string, nameSubstring: string): Promise<boolean> {
+  const apiKey = process.env.CLICKUP_API_KEY
+  if (!apiKey) throw new Error('CLICKUP_API_KEY not set')
+
+  const res = await fetch(
+    `https://api.clickup.com/api/v2/list/${listId}/task?include_closed=true`,
+    { headers: { Authorization: apiKey }, next: { revalidate: 0 } }
+  )
+  if (!res.ok) return false
+
+  const data = await res.json()
+  return (data.tasks ?? []).some((t: { name?: string }) => t.name?.includes(nameSubstring))
 }
 
 export async function updateTaskFields(
