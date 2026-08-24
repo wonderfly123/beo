@@ -29,7 +29,7 @@ function getIntakeTransporter() {
   })
 }
 
-const ALERT_EMAIL = 'jordan@wonderflyathletics.com'
+const ALERT_EMAIL = 'jordan@windanseacoconuts.com'
 
 export async function sendErrorAlert(params: {
   source: string
