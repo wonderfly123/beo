@@ -11,6 +11,9 @@ import {
   sumQuantities,
 } from '@/lib/square'
 
+// "Wholesale" list in the Windansea Events space
+const WHOLESALE_LIST_ID = '901414721789'
+
 // ClickUp custom field IDs (Wholesale list)
 const CLICKUP_FIELDS = {
   companyName: '75e86982-b682-4c56-86c4-2007b87d89df',
@@ -71,8 +74,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ skipped: true, reason: 'Not a wholesale invoice' })
     }
 
-    const listId = process.env.CLICKUP_WHOLESALE_LIST_ID
-    if (!listId) throw new Error('CLICKUP_WHOLESALE_LIST_ID not set')
+    const listId = WHOLESALE_LIST_ID
 
     const recipient = invoice.primary_recipient ?? {}
     const invoiceNumber = invoice.invoice_number ?? invoice.id
