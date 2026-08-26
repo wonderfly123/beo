@@ -4,7 +4,7 @@ import {
   isWholesaleInvoice,
   buildTaskDescription,
   formatMoney,
-  countCoconuts,
+  countProducts,
   SquareInvoice,
   SquareOrder,
 } from '@/lib/square'
@@ -95,13 +95,13 @@ describe('formatMoney', () => {
   })
 })
 
-describe('countCoconuts', () => {
-  it('sums only coconut line item quantities', () => {
-    // "Case of Coconuts" × 10 counts; "Straws" × 2 does not
-    expect(countCoconuts(order)).toBe(10)
+describe('countProducts', () => {
+  it('counts case lines as cases, not coconuts', () => {
+    // "Case of Coconuts" × 10 → cases; "Straws" × 2 ignored
+    expect(countProducts(order)).toEqual({ cases: 10, coconuts: 0 })
   })
 
-  it('excludes fees and non-coconut lines', () => {
+  it('counts individual coconut lines and excludes fees', () => {
     const ord: SquareOrder = {
       id: 'ord_3',
       line_items: [
@@ -109,11 +109,23 @@ describe('countCoconuts', () => {
         { name: 'Delivery fee', quantity: '1' },
       ],
     }
-    expect(countCoconuts(ord)).toBe(15)
+    expect(countProducts(ord)).toEqual({ cases: 0, coconuts: 15 })
+  })
+
+  it('tallies mixed case and coconut lines separately', () => {
+    const ord: SquareOrder = {
+      id: 'ord_4',
+      line_items: [
+        { name: 'Case of Coconuts', quantity: '3' },
+        { name: 'Branded Coconuts', quantity: '12' },
+        { name: 'Shipping', quantity: '1' },
+      ],
+    }
+    expect(countProducts(ord)).toEqual({ cases: 3, coconuts: 12 })
   })
 
   it('handles missing order', () => {
-    expect(countCoconuts(null)).toBe(0)
+    expect(countProducts(null)).toEqual({ cases: 0, coconuts: 0 })
   })
 })
 

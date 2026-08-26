@@ -88,16 +88,22 @@ export function formatMoney(money: SquareMoney | undefined): string {
 }
 
 /**
- * Total coconut count: sum of quantities across line items whose name
- * mentions coconuts. Skips non-product lines like delivery fees.
- * (Square sends quantity as a string.)
+ * Product counts by unit. Wholesale items are sold either by the case
+ * ("Case of Coconuts") or as individual coconuts — a case quantity is not a
+ * coconut count, so the two are tallied separately. Non-product lines
+ * (delivery fees, shipping) are skipped. (Square sends quantity as a string.)
  */
-export function countCoconuts(order: SquareOrder | null): number {
-  return (order?.line_items ?? []).reduce((sum, li) => {
-    if (!/coco/i.test(li.name ?? '')) return sum
+export function countProducts(order: SquareOrder | null): { cases: number; coconuts: number } {
+  const counts = { cases: 0, coconuts: 0 }
+  for (const li of order?.line_items ?? []) {
+    const name = li.name ?? ''
+    if (/fee|delivery|shipping/i.test(name)) continue
     const q = Number(li.quantity)
-    return sum + (isNaN(q) ? 0 : q)
-  }, 0)
+    if (isNaN(q)) continue
+    if (/case/i.test(name)) counts.cases += q
+    else if (/coco/i.test(name)) counts.coconuts += q
+  }
+  return counts
 }
 
 export function buildTaskDescription(invoice: SquareInvoice, order: SquareOrder | null): string {
