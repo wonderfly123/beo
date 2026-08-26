@@ -8,7 +8,7 @@ import {
   fetchOrder,
   isWholesaleInvoice,
   buildTaskDescription,
-  sumQuantities,
+  countCoconuts,
 } from '@/lib/square'
 
 // "Wholesale" list in the Windansea Events space
@@ -21,7 +21,7 @@ const CLICKUP_FIELDS = {
   clientLastName: '7ec644ea-814a-4a79-ab52-4a4543466cfb',
   clientEmail: 'a4316b37-4646-4db8-93d7-c37561d17a77',
   clientPhone: '2d0cc4d7-91e9-4d8d-bc0e-43321cfa1d48',
-  numberOfCases: '9844a34f-e6b9-40bb-ac69-644bb5c26c3d',
+  coconutQty: '3e9943e1-4e51-466b-9d6d-f01e862a1bec',
 }
 
 function verifySignature(rawBody: string, signature: string | null): boolean {
@@ -100,8 +100,8 @@ export async function POST(req: NextRequest) {
     if (recipient.family_name) customFields.push({ id: CLICKUP_FIELDS.clientLastName, value: recipient.family_name })
     if (recipient.email_address) customFields.push({ id: CLICKUP_FIELDS.clientEmail, value: recipient.email_address })
     if (phone) customFields.push({ id: CLICKUP_FIELDS.clientPhone, value: phone })
-    const cases = sumQuantities(order)
-    if (cases > 0) customFields.push({ id: CLICKUP_FIELDS.numberOfCases, value: cases })
+    const coconuts = countCoconuts(order)
+    if (coconuts > 0) customFields.push({ id: CLICKUP_FIELDS.coconutQty, value: coconuts })
 
     // Invoice due date (date-only, e.g. "2026-09-15") — noon UTC so the date
     // displays on the correct calendar day in any US timezone

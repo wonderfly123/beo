@@ -4,7 +4,7 @@ import {
   isWholesaleInvoice,
   buildTaskDescription,
   formatMoney,
-  sumQuantities,
+  countCoconuts,
   SquareInvoice,
   SquareOrder,
 } from '@/lib/square'
@@ -95,13 +95,25 @@ describe('formatMoney', () => {
   })
 })
 
-describe('sumQuantities', () => {
-  it('sums line item quantities', () => {
-    expect(sumQuantities(order)).toBe(12)
+describe('countCoconuts', () => {
+  it('sums only coconut line item quantities', () => {
+    // "Case of Coconuts" × 10 counts; "Straws" × 2 does not
+    expect(countCoconuts(order)).toBe(10)
+  })
+
+  it('excludes fees and non-coconut lines', () => {
+    const ord: SquareOrder = {
+      id: 'ord_3',
+      line_items: [
+        { name: 'Branded Coconuts Pelican Hill', quantity: '15' },
+        { name: 'Delivery fee', quantity: '1' },
+      ],
+    }
+    expect(countCoconuts(ord)).toBe(15)
   })
 
   it('handles missing order', () => {
-    expect(sumQuantities(null)).toBe(0)
+    expect(countCoconuts(null)).toBe(0)
   })
 })
 

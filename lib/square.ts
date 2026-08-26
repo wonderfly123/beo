@@ -87,9 +87,14 @@ export function formatMoney(money: SquareMoney | undefined): string {
   return `$${(money.amount / 100).toFixed(2)}`
 }
 
-/** Sum of line item quantities (Square sends quantity as a string). */
-export function sumQuantities(order: SquareOrder | null): number {
+/**
+ * Total coconut count: sum of quantities across line items whose name
+ * mentions coconuts. Skips non-product lines like delivery fees.
+ * (Square sends quantity as a string.)
+ */
+export function countCoconuts(order: SquareOrder | null): number {
   return (order?.line_items ?? []).reduce((sum, li) => {
+    if (!/coco/i.test(li.name ?? '')) return sum
     const q = Number(li.quantity)
     return sum + (isNaN(q) ? 0 : q)
   }, 0)
